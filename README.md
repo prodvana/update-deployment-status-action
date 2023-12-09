@@ -1,6 +1,6 @@
-# update-release-status Github Action
+# update-deployment-status Github Action
 
-This action updates the status of a release on GitHub Actions to Prodvana. This is meant to be used in conjunction with record-release-action, with `pending: true`.
+This action updates the status of a deployment on GitHub Actions to Prodvana. This is meant to be used in conjunction with record-deployment-action, with `pending: true`.
 
 
 # Requirements
@@ -13,8 +13,8 @@ This action updates the status of a release on GitHub Actions to Prodvana. This 
 
 | Input             | Default        | Description                                                                                                                                              |
 | ----------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| release_id        | (required)     | The release ID returned from record-release action                                                                                                       |
-| failed            | false          | Mark release as failing                                                                                                                                  |
+| deployment_id     | (required)     | The deployment ID returned from record-deployment action                                                                                                       |
+| failed            | false          | Mark deployment as failing                                                                                                                                  |
 | auth_context      | default        | pvnctl auth context to use. If you're using this action with init-pvnctl, leave as the default                                                           |
 
 
@@ -27,20 +27,20 @@ steps:
     with:
       org: my-org
       api_token: ${{ secrets.YOUR_PRODVANA_API_TOKEN }}
-  - uses: prodvana/record-release-action@v0.1.2
-    id: record-release
+  - uses: prodvana/record-deployment-action@v0.1.2
+    id: record-deployment
     with:
       app: product-name
       service: web
       release_channel: prod
       pending: true
-  # do actual release, then add these at the end
-  - uses: prodvana/update-release-status-action@v0.1.1
+  # do actual deployment, then add these at the end
+  - uses: prodvana/update-deployment-status-action@v0.1.1
     with:
-      release_id: ${{ steps.record-release.outputs.release_id }}
-  - uses: prodvana/update-release-status-action@v0.1.1
+      deployment_id: ${{ steps.record-deployment.outputs.deployment_id }}
+  - uses: prodvana/update-deployment-status-action@v0.1.1
     if: failure()
     with:
-      release_id: ${{ steps.record-release.outputs.release_id }}
+      deployment_id: ${{ steps.record-release.outputs.deployment_id }}
       failed: true
 ```

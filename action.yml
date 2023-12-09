@@ -1,11 +1,11 @@
-name: "Update release status"
-description: "Update status of an external release to Prodvana."
+name: "Update deployment status"
+description: "Update status of an external deployment to Prodvana."
 inputs:
-  release_id:
-    description: "The release ID returned from record-release action"
+  deployment_id:
+    description: "The deployment ID returned from record-deployment action"
     required: true
   failed:
-    description: "Mark release as failing."
+    description: "Mark deployment as failing."
     type: boolean
     defualt: false
   auth_context:
@@ -16,12 +16,12 @@ outputs: {}
 runs:
   using: "composite"
   steps:
-    - name: pvnctl releases update-status
+    - name: pvnctl deployments update-status
       shell: bash
       run: |
         set -euxo pipefail
         pvnctl auth context use ${{ inputs.auth_context }}
-        CMD="pvnctl releases update-status ${{ inputs.release_id }}"
+        CMD="pvnctl releases update-status ${{ inputs.deployment_id }}"
         if [[ "${{ inputs.failed }}" == "true" ]]; then
           CMD="$CMD --status=failed"
         else
